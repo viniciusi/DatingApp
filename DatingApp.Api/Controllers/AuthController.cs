@@ -28,7 +28,7 @@ namespace DatingApp.Api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserForRegisterDto userForRegisterDto)
         {
-            userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
+            userForRegisterDto.Username = userForRegisterDto.Username.ToLower().Trim();
 
             if (await _repository.UserExists(userForRegisterDto.Username))
                 return BadRequest("Userbame already exists");
@@ -45,11 +45,10 @@ namespace DatingApp.Api.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
-        {
+        public async Task<IActionResult> Login(UserForLoginDto userForLoginDto) {
             // First we're check in to make sure that we have a user and their 
             // username and password match is stored in the database .
-            var userFromRepository = await _repository.Login(userForLoginDto.Username.ToLower(), userForLoginDto.Password);
+            var userFromRepository = await _repository.Login(userForLoginDto.Username.ToLower().Trim(), userForLoginDto.Password);
             
             // If the user doesn't exist we will return a Unauthorized error
             if (userFromRepository == null)
