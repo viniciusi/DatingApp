@@ -9,9 +9,17 @@ namespace DatingApp.Api.Helpers
     {
         public AutoMapperProfiles() {
             CreateMap<User, UserForListDto>()
+                // Since the AutoMapper cannot recognized the PhotoUrl automatically.
+                // This happen because our Domain Model doesn't have a PhotoUrl property.
+                // So we need to tell AutoMapper how this property works.
+                // Here we tell that we want to map PhotoUrl (dest)
+                // Now in MapFrom we will tell to get the Url from photo 
+                // where the photo is the main
                 .ForMember(dest => dest.PhotoUrl, opt => {
                     opt.MapFrom(src => src.Photos.FirstOrDefault(p => p.IsMain).Url);
                 })
+                // Here we create a Extension called CalculateAge inside the Extension.cs
+                // And we use this new extension to calculate to us.
                 .ForMember(dest => dest.Age, opt => {
                     opt.MapFrom(d => d.DateOfBirth.CalculateAge());
                 });

@@ -1,0 +1,32 @@
+import { ActivatedRoute } from '@angular/router';
+import { AlertifyService } from './../../_services/alertify.service';
+import { UserService } from './../../_services/user.service';
+import { Component, OnInit } from '@angular/core';
+import { User } from '../../_models/user';
+
+@Component({
+  selector: 'app-member-list',
+  templateUrl: './member-list.component.html',
+  styleUrls: ['./member-list.component.css']
+})
+export class MemberListComponent implements OnInit {
+  users: User[];
+
+  constructor(
+    private userService: UserService,
+    private alertify: AlertifyService,
+    private route: ActivatedRoute) { }
+
+  ngOnInit() {
+    this.loadUsers();
+  }
+
+  loadUsers() {
+    this.route.data.subscribe(data => {
+      // in the data[] we use the name we used in our routes.ts
+      // resolve: {user: MemberDetailResolver}
+      // we used user, so we use data['user']
+      this.users = data['users'];
+    });
+  }
+}
