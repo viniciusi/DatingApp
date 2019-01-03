@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using DatingApp.Api.Data;
 using DatingApp.Api.Dtos;
 using DatingApp.Api.Models;
@@ -19,9 +20,15 @@ namespace DatingApp.Api.Controllers
     {
         private readonly IAuthRepository _repository;
         private readonly IConfiguration _config;
-        public AuthController(IAuthRepository repository, IConfiguration config)
+        private readonly IMapper _mapper;
+
+        public AuthController(
+            IAuthRepository repository, 
+            IConfiguration config,
+            IMapper mapper)
         {
             _config = config;
+            _mapper = mapper;
             _repository = repository;
         }
 
@@ -33,15 +40,16 @@ namespace DatingApp.Api.Controllers
             if (await _repository.UserExists(userForRegisterDto.Username))
                 return BadRequest("Userbame already exists");
 
-            var userToCreate = new User
-            {
-                Username = userForRegisterDto.Username
-            };
+            var userToCreate = _mapper.Map<User>(userForRegisterDto);
 
             var createdUser = await _repository.Register(userToCreate, userForRegisterDto.Password);
 
-            // return CreatedAtAction();
-            return StatusCode(201);
+            var userToReturn = _mapper.Map<UserForDetailedDto>(createdUser);
+
+            return CreatedAtRoute("GetUser", new { 
+                controller = "Users", 
+                id = createdUser.Id }, 
+                userToReturn);
         }
 
         [HttpPost("login")]
@@ -92,8 +100,11 @@ namespace DatingApp.Api.Controllers
             // back to out client
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
+            var user = _mapper.Map<UserForListDto>(userFromRepository);
+
             return Ok(new {
-                token = tokenHandler.WriteToken(token)
+                token = tokenHandler.WriteToken(token),
+                user
             });
         }
     }
