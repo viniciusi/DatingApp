@@ -8,6 +8,9 @@ import { catchError } from 'rxjs/operators';
 
 @Injectable()
 export class MemberListResolver implements Resolve<User> {
+    pageNumber = 1;
+    pageSize = 5;
+
     constructor(
         private userService: UserService,
         private router: Router,
@@ -16,7 +19,7 @@ export class MemberListResolver implements Resolve<User> {
     resolve(route: ActivatedRouteSnapshot): Observable<User> {
         // we don't used the subscribe because when we use a resolver
         // this automatically subscribes to the method
-        return this.userService.getUsers().pipe(
+        return this.userService.getUsers(this.pageNumber, this.pageSize).pipe(
             // from here, this is purely to catch the error
             // and return out of this method if we a problem
             // if we don't have a problem we're just going to continue
