@@ -1,3 +1,4 @@
+import { MemberMessagesComponent } from './members/member-messages/member-messages.component';
 import { ListsResolver } from './_resolves/lists.resolver';
 import { PreventUnsavedChanges } from './_guards/prevents-unsaved-changes.guard';
 import { MemberEditResolver } from './_resolves/member-edit.resolver';
@@ -38,6 +39,7 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { MemberEditComponent } from './members/member-edit/member-edit.component';
 import { PhotoEditorComponent } from './members/photo-editor/photo-editor.component';
 import { TimeAgoPipe } from 'time-ago-pipe';
+import { MessagesResolver } from './_resolves/messages.resolver';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -57,7 +59,8 @@ export function tokenGetter() {
       MemberDetailComponent,
       MemberEditComponent,
       PhotoEditorComponent,
-      TimeAgoPipe
+      TimeAgoPipe,
+      MemberMessagesComponent
    ],
    imports: [
       BrowserModule,
@@ -92,7 +95,8 @@ export function tokenGetter() {
       MemberListResolver,
       MemberEditResolver,
       ListsResolver,
-      PreventUnsavedChanges
+      PreventUnsavedChanges,
+      MessagesResolver
    ],
    bootstrap: [
       AppComponent
